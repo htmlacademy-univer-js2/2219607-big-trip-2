@@ -5,7 +5,7 @@ const createTripListTemplate = () => (
   </ul>`
 );
 
-export default class WaypointList {
+export default class WaypointListView {
   getTemplate(){
     return createTripListTemplate();
   }

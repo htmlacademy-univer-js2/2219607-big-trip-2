@@ -1,9 +1,9 @@
-import { render } from '../render.js';
-import CreatingFormView from '../view/creating-form.js';
-import EditFormView from '../view/edit-form.js';
-import SortingView from '../view/sorting.js';
-import WaypointListView from '../view/waypoint-list.js';
-import WaypointView from '../view/waypoint.js';
+import {render} from '../render.js';
+import CreatingFormView from '../view/creating-form-view.js';
+import EditFormView from '../view/edit-form-view.js';
+import SortingView from '../view/sorting-view.js';
+import WaypointListView from '../view/waypoint-list-view.js';
+import WaypointView from '../view/waypoint-view.js';
 
 export default class TripPresenter{
   constructor({container}){
