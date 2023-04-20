@@ -10,3 +10,4 @@ const pointsModel = new PointModel();
 
 render(new FiltersView(), filterContainer);
 tripPresenter.init(pointsModel);
+
