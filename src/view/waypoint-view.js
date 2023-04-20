@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import {createElement} from '../render';
 
 const createPointTemplate = () =>
   `<li class="trip-events__item">
@@ -39,7 +39,7 @@ const createPointTemplate = () =>
     </div>
   </li>`;
 
-export default class Waypoint {
+export default class WaypointView {
   constructor() {
     this.element = null;
   }
