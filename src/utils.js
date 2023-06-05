@@ -1,38 +1,32 @@
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-
-const HOUR_IN_DAY = 24;
-const MIN_IN_HOUR = 60;
-
-dayjs.extend(duration);
-
-export const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
+export const randomInteger = (min, max) => {
+  const random = min + Math.random() * (max + 1 - min);
+  return Math.floor(random);
 };
 
-export const convertEventDateIntoDay = (pointDate) => dayjs(pointDate).format('MMM D');
-
-export const convertEventDateIntoHour = (pointDate) => dayjs(pointDate).format('HH:mm');
-
-export const subtractDates = (startDate, endDate) => {
-  const dateFrom = dayjs(startDate);
-  const dateTo = dayjs(endDate);
-
-  const diffInTotalMinutes = Math.ceil(dateTo.diff(dateFrom, 'minute', true));
-  const diffInHours = Math.floor(diffInTotalMinutes / MIN_IN_HOUR) % HOUR_IN_DAY;
-  const diffInDays = Math.floor(diffInTotalMinutes / (MIN_IN_HOUR * HOUR_IN_DAY));
-
-  if ((diffInDays === 0) && (diffInHours === 0)) {
-    return dayjs.duration(diffInTotalMinutes, 'minutes').format('mm[M]');
-  } else if (diffInDays === 0) {
-    return dayjs.duration(diffInTotalMinutes, 'minutes').format('HH[H] mm[M]');
+export function upperCaseFirst(str) {
+  if (!str) {
+    return str;
   }
-  return dayjs.duration(diffInTotalMinutes, 'minutes').format('DD[D] HH[H] mm[M]');
+
+  return str[0].toUpperCase() + str.slice(1);
+}
+
+export const humanizeDateTime = (dateFrom, dateTo) => {
+  const oneMinuteInMilliseconds = 60 * 1000;
+  const oneHourInMilliseconds = 60 * oneMinuteInMilliseconds;
+  const oneDayInMilliseconds = 24 * oneHourInMilliseconds;
+
+  const datetimeBetween = dateTo.diff(dateFrom);
+  if (datetimeBetween > oneDayInMilliseconds) {
+    return `${parseInt(datetimeBetween / oneDayInMilliseconds, 10)}D ${parseInt(
+      (datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds,
+      10
+    )}H ${parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds}M`;
+  } else if (datetimeBetween > oneHourInMilliseconds) {
+    return `${parseInt((datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds, 10)}H ${
+      parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds
+    }M`;
+  } else {
+    return `${parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds}M`;
+  }
 };
-
-export const checkFavoriteOption = (isFavorite) => (isFavorite) ? 'event__favorite-btn--active' : '';
-
-export const capitalizeFirstLetter = (str) => str[0].toUpperCase() + str.slice(1);

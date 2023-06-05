@@ -1,6 +1,6 @@
-import {createElement} from '../render';
+import { createElement } from '../render';
 
-const createCreatingFormTemplate = () =>
+const createNewPointTemplate = () =>
   `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -143,17 +143,23 @@ const createCreatingFormTemplate = () =>
   </form>
 </li>`;
 
-export default class NewPoint {
-  getTemplate() {
-    return createCreatingFormTemplate();
+export default class NewPointView {
+  #element = null;
+
+  constructor() {
+    this.#element = null;
   }
 
-  getElement() {
-    this.element = this.element || createElement(this.getTemplate());
-    return this.element;
+  get template() {
+    return createNewPointTemplate();
+  }
+
+  get element() {
+    this.#element = this.#element || createElement(this.template);
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
