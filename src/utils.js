@@ -18,15 +18,26 @@ export const humanizeDateTime = (dateFrom, dateTo) => {
 
   const datetimeBetween = dateTo.diff(dateFrom);
   if (datetimeBetween > oneDayInMilliseconds) {
-    return `${parseInt(datetimeBetween / oneDayInMilliseconds, 10)}D ${parseInt(
-      (datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds,
-      10
-    )}H ${parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds}M`;
-  } else if (datetimeBetween > oneHourInMilliseconds) {
-    return `${parseInt((datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds, 10)}H ${
+    return `${parseInt(datetimeBetween / oneDayInMilliseconds, 10)}D ${parseInt((datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds, 10)}H ${
       parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds
     }M`;
+  } else if (datetimeBetween > oneHourInMilliseconds) {
+    return `${parseInt((datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds, 10)}H ${parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds}M`;
   } else {
     return `${parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds}M`;
   }
+};
+
+export const isDateBefore = (dateFrom, dateTo) => {
+  return dateTo.diff(dateFrom) > 0;
+};
+
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [...items.slice(0, index), update, ...items.slice(index + 1)];
 };

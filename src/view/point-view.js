@@ -3,7 +3,7 @@ import { humanizeDateTime, upperCaseFirst } from '../utils';
 import AbstractView from '../framework/view/abstract-view';
 
 const createOffersTemplate = (offers, type, activeOffersIds) => {
-  const offersByType = offers.filter((offer) => offer.type === type)[0].offers;
+  const offersByType = offers.find((offer) => offer.type === type).offers;
   return offersByType
     .map((offer) => {
       return activeOffersIds.includes(offer.id)
@@ -68,24 +68,33 @@ export default class PointView extends AbstractView {
   #destinations = null;
   #offersByType = null;
 
-  constructor(point, destinations, offersByType) {
+  #editClick = null;
+  #favoriteClick = null;
+
+  constructor({ point, destinations, offersByType, editClick, favoriteClick }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offersByType = offersByType;
+
+    this.#editClick = editClick;
+    this.#favoriteClick = favoriteClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
     return createPointTemplate(this.#point, this.#destinations, this.#offersByType);
   }
 
-  setEditClickHandler = (callback) => {
-    this._callback.editClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
-  };
-
   #editClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.editClick();
+    this.#editClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#favoriteClick();
   };
 }
