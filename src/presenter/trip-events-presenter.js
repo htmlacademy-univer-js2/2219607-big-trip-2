@@ -1,4 +1,4 @@
-import { render, RenderPosition } from '../render';
+import { render, RenderPosition } from '../framework/render';
 import EditPointView from '../view/edit-point-view';
 import PointsListView from '../view/points-list-view';
 import SortView from '../view/sort-view';
@@ -33,25 +33,24 @@ export default class Trip {
     };
 
     const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
+      if (evt.key === 'Escape' || evt.key == 'Esc') {
         evt.preventDefault();
         replaceFormToPoint();
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
 
-    pointElement.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointElement.setEditClickHandler(() => {
       replacePointToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    editFormElement.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    editFormElement.setSaveClickHandler(() => {
       replaceFormToPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
+      document.addEventListener('keydown', onEscKeyDown);
     });
 
     editFormElement.element.querySelector('.event__save-btn').addEventListener('click', (evt) => {
-      evt.preventDefault();
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
