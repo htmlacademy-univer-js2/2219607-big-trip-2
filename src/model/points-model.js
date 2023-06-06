@@ -18,6 +18,10 @@ export default class PointModel {
     for (let i = 0; i < 9; i++) {
       this.#offersByType.push(createOfferByType(i));
     }
+
+    for (let i = 0; i < 4; i++) {
+      this.#points.push(createPoint(i));
+    }
   }
 
   get points() {
