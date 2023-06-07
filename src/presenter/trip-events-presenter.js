@@ -3,7 +3,8 @@ import PointsListView from '../view/points-list-view';
 import SortView from '../view/sort-view';
 import EmptyPointsListView from '../view/empty-points-list-view';
 import PointPresenter from './point-presenter';
-import { updateItem } from '../utils';
+import { SortFunctions, updateItem } from '../utils';
+import { SortType } from '../const';
 
 export default class Trip {
   #pointsListComponent = new PointsListView();
@@ -15,6 +16,7 @@ export default class Trip {
   #points = null;
   #destinations = null;
   #offersByType = null;
+  #currentSortType = SortType.DAY;
 
   #pointPresenter = new Map();
 
@@ -43,6 +45,26 @@ export default class Trip {
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
+  #sortPoints = (sortType) => {
+    this.#points.sort(SortFunctions[sortType]);
+    this.#currentSortType = sortType;
+  };
+
+  #handleSortButtonClick = (sortType) => {
+    if (sortType === this.#currentSortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    this.#clearPointsList();
+    this.#renderPointsList();
+  };
+
+  #clearPointsList = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
+  };
+
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#pointsListComponent.element, this.#destinations, this.#offersByType, this.#handlePointChange, this.#handleModeChange);
     pointPresenter.init(point);
@@ -67,7 +89,7 @@ export default class Trip {
 
   #renderSort = () => {
     if (this.#sortComponent === null) {
-      this.#sortComponent = new SortView();
+      this.#sortComponent = new SortView(this.#handleSortButtonClick);
     }
     render(this.#sortComponent, this.#container);
   };
