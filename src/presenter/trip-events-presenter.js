@@ -1,9 +1,7 @@
-import { render, RenderPosition, replace } from '../framework/render';
+import { render } from '../framework/render';
 import PointsListView from '../view/points-list-view';
 import SortView from '../view/sort-view';
 import EmptyPointsListView from '../view/empty-points-list-view';
-import InfoView from '../view/info-view';
-import FiltersView from '../view/filters-view';
 import PointPresenter from './point-presenter';
 import { updateItem } from '../utils';
 

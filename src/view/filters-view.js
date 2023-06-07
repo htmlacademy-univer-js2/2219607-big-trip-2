@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import AbsractView from '../framework/view/abstract-view';
 import { isDateBefore } from '../utils';
 
-var relativeTime = require('dayjs/plugin/relativeTime');
+import relativeTime from 'dayjs/plugin/relativeTime';
+
 dayjs.extend(relativeTime);
 
 const createFiltersTemplate = (points) => {
@@ -38,6 +39,7 @@ export default class FiltersView extends AbsractView {
     super();
     this.#points = points;
   }
+
   get template() {
     return createFiltersTemplate(this.#points);
   }

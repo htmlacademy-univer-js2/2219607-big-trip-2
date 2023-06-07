@@ -16,8 +16,8 @@ const BLANK_POINT = {
 const createOffersTemplate = (offers, type, activeOffersIds) => {
   const offersByType = offers.find((offer) => offer.type === type).offers;
   return offersByType
-    .map((offer) => {
-      return `
+    .map((offer) =>
+      `
       <div class="event__available-offers">
         <div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${activeOffersIds.includes(offer.id) ? 'checked' : ''}>
@@ -26,27 +26,22 @@ const createOffersTemplate = (offers, type, activeOffersIds) => {
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
         </label>
-      </div>`;
-    })
+      </div>`)
     .join('\n');
 };
 
 const createTypesTemplate = (offersByType) => {
   const types = offersByType.map((type) => type.type);
   return types
-    .map((type) => {
-      return `
+    .map((type) => `
     <div class="event__type-item">
       <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${upperCaseFirst(type)}</label>
-    </div>`;
-    })
+    </div>`)
     .join('\n');
 };
 
-const createDestinationsOptionsTemplate = (destinations) => {
-  return destinations.map((destination) => `<option value="${destination.name}">${destination.name}</option>`).join('\n');
-};
+const createDestinationsOptionsTemplate = (destinations) => destinations.map((destination) => `<option value="${destination.name}">${destination.name}</option>`).join('\n');
 
 const createEditPointTemplate = (point, destinations, offersByType) => {
   let { dateFrom, dateTo } = point;
