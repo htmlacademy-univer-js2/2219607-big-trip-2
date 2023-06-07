@@ -75,10 +75,10 @@ export default class PointPresenter {
   };
 
   #onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key == 'Esc') {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.#replaceFormToPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
+      document.removeEventListener('keydown', this.#onEscKeyDown);
     }
   };
 

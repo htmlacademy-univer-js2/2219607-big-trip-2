@@ -17,9 +17,7 @@ const createTripTitleInfo = (points, destinations) => {
   }
 };
 
-const createDatesInfo = (points) => {
-  return `${points[0].dateFrom.format('MMM D')}&nbsp;&mdash;&nbsp;${points[points.length - 1].dateTo.format('MMM D')}`;
-};
+const createDatesInfo = (points) => `${points[0].dateFrom.format('MMM D')}&nbsp;&mdash;&nbsp;${points[points.length - 1].dateTo.format('MMM D')}`;
 
 const createInfoTemplate = (points, destinations) => {
   const summaryPrice = points.reduce((currentValue, point) => point.basePrice + currentValue, 0);

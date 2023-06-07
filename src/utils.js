@@ -28,9 +28,7 @@ export const humanizeDateTime = (dateFrom, dateTo) => {
   }
 };
 
-export const isDateBefore = (dateFrom, dateTo) => {
-  return dateTo.diff(dateFrom) > 0;
-};
+export const isDateBefore = (dateFrom, dateTo) => dateTo.diff(dateFrom) > 0;
 
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
