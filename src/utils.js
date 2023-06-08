@@ -1,3 +1,5 @@
+import {SortType} from './const';
+
 export const randomInteger = (min, max) => {
   const random = min + Math.random() * (max + 1 - min);
   return Math.floor(random);
@@ -41,8 +43,7 @@ export const updateItem = (items, update) => {
 };
 
 export const SortFunctions = {
-  DAY: (firstPoint, secondPoint) => firstPoint.dateFrom.diff(secondPoint.dateFrom),
-  TIME: (firstPoint, secondPoint) => secondPoint.dateFrom.diff(secondPoint.dateTo) - firstPoint.dateFrom.diff(firstPoint.dateTo),
-  PRICE: (firstPoint, secondPoint) => firstPoint.basePrice - secondPoint.basePrice,
+  [SortType.DAY]: (firstPoint, secondPoint) => firstPoint.dateFrom.diff(secondPoint.dateFrom),
+  [SortType.TIME]: (firstPoint, secondPoint) => secondPoint.dateFrom.diff(secondPoint.dateTo) - firstPoint.dateFrom.diff(firstPoint.dateTo),
+  [SortType.PRICE]: (firstPoint, secondPoint) => firstPoint.basePrice - secondPoint.basePrice,
 };
-
