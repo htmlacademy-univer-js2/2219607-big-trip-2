@@ -1,4 +1,5 @@
-import AbsractView from '../framework/view/abstract-view';
+import AbstractView from '../framework/view/abstract-view';
+import dayjs from 'dayjs';
 
 const createTripTitleInfo = (points, destinations) => {
   const destinationsOrder = [];
@@ -17,7 +18,7 @@ const createTripTitleInfo = (points, destinations) => {
   }
 };
 
-const createDatesInfo = (points) => `${points[0].dateFrom.format('MMM D')}&nbsp;&mdash;&nbsp;${points[points.length - 1].dateTo.format('MMM D')}`;
+const createDatesInfo = (points) => `${dayjs(points[0].dateFrom).format('MMM D')}&nbsp;&mdash;&nbsp;${dayjs(points[points.length - 1].dateTo).format('MMM D')}`;
 
 const createInfoTemplate = (points, destinations) => {
   const summaryPrice = points.reduce((currentValue, point) => point.basePrice + currentValue, 0);
@@ -37,7 +38,7 @@ const createInfoTemplate = (points, destinations) => {
   </section>`;
 };
 
-export default class InfoView extends AbsractView {
+export default class InfoView extends AbstractView {
   #points = null;
   #destinations = null;
 

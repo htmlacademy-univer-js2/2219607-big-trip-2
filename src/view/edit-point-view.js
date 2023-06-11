@@ -1,6 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { upperCaseFirst } from '../utils';
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -119,9 +121,10 @@ const createEditPointTemplate = (point, destinations, offersByType) => {
 export default class EditPointView extends AbstractStatefulView {
   #destinations = null;
   #offersByType = null;
-
   #saveClick = null;
   #closeClick = null;
+  #dateFromPicker = null;
+  #dateToPicker = null;
 
   constructor({ point = BLANK_POINT, destinations, offersByType, saveClick, closeClick }) {
     super();
@@ -138,6 +141,23 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditPointTemplate(this._state, this.#destinations, this.#offersByType);
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
+  }
+
+  reset(point) {
+    this.updateElement(EditPointView.parsePointToState(point, this.#offersByType, this.#destinations));
+  }
+
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
     this.element.querySelector('.event__save-btn').addEventListener('click', this.#saveClickHandler);
@@ -145,7 +165,39 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('blur', this.#destinationChangeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersCheckHandler);
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
   }
+
+  #setDateFromPicker() {
+    this.#dateFromPicker = flatpickr(this.element.querySelector('#event-start-time-1'), {
+      dateFormat: 'd/m/y H:i',
+      defaultDate: this._state.dateFrom,
+      onClose: this.#dateFromChangeHandler,
+      enableTime: true,
+    });
+  }
+
+  #setDateToPicker() {
+    this.#dateToPicker = flatpickr(this.element.querySelector('#event-end-time-1'), {
+      dateFormat: 'd/m/y H:i',
+      defaultDate: this._state.dateTo,
+      onClose: this.#dateToChangeHandler,
+      enableTime: true,
+    });
+  }
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
 
   #saveClickHandler = (evt) => {
     evt.preventDefault();
