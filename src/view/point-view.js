@@ -5,13 +5,15 @@ import AbstractView from '../framework/view/abstract-view';
 const createOffersTemplate = (offers, type, activeOffersIds) => {
   const offersByType = offers.find((offer) => offer.type === type).offers;
   return offersByType
-    .map((offer) => activeOffersIds.includes(offer.id)
-      ? `<li class="event__offer">
+    .map((offer) =>
+      activeOffersIds.includes(offer.id)
+        ? `<li class="event__offer">
         <span class="event__offer-title">${offer.title}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
       </li>`.trim()
-      : '')
+        : ''
+    )
     .join('\n');
 };
 
@@ -77,7 +79,6 @@ export default class PointView extends AbstractView {
 
     this.#editClick = editClick;
     this.#favoriteClick = favoriteClick;
-
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
