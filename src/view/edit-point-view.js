@@ -2,12 +2,13 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { upperCaseFirst } from '../utils';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
+
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   basePrice: 0,
-  dateFrom: null,
-  dateTo: null,
+  dateFrom: new Date(),
+  dateTo: new Date(),
   destination: 0,
   id: 0,
   isFavorite: false,
@@ -15,30 +16,39 @@ const BLANK_POINT = {
   type: 'taxi',
 };
 
-const createOffersTemplate = (offers) => offers
-  .map((offer) => `
+const createOffersTemplate = (offers) =>
+  offers
+    .map(
+      (offer) => `
         <div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}" ${offer.isChecked ? 'checked' : ''}>
+        <input class="event__offer-checkbox  visually-hidden"
+        id="event-offer-${offer.title}-1" type="checkbox"
+        name="event-offer-${offer.title}" ${offer.isChecked ? 'checked' : ''}>
         <label class="event__offer-label" for="event-offer-${offer.title}" data-name="${offer.id}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
         </label>
-      </div>`)
-  .join('\n');
+      </div>`
+    )
+    .join('\n');
 
 const createTypesTemplate = (offersByType) => {
   const types = offersByType.map((type) => type.type);
   return types
-    .map((type) => `
+    .map(
+      (type) => `
     <div class="event__type-item">
       <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${upperCaseFirst(type)}</label>
-    </div>`)
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">
+      ${upperCaseFirst(type)}</label>
+    </div>`
+    )
     .join('\n');
 };
 
-const createDestinationsOptionsTemplate = (destinations) => destinations.map((destination) => `<option value="${destination.name}">${destination.name}</option>`).join('\n');
+const createDestinationsOptionsTemplate = (destinations) =>
+  destinations.map((destination) => `<option value="${destination.name}">${destination.name}</option>`).join('\n');
 
 const createEditPointTemplate = (point, destinations, offersByType) => {
   let { dateFrom, dateTo } = point;
@@ -92,7 +102,7 @@ const createEditPointTemplate = (point, destinations, offersByType) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
@@ -121,19 +131,24 @@ const createEditPointTemplate = (point, destinations, offersByType) => {
 export default class EditPointView extends AbstractStatefulView {
   #destinations = null;
   #offersByType = null;
+
   #saveClick = null;
   #closeClick = null;
+  #deleteClick = null;
+
   #dateFromPicker = null;
   #dateToPicker = null;
 
-  constructor({ point = BLANK_POINT, destinations, offersByType, saveClick, closeClick }) {
+  constructor({ point = BLANK_POINT, destinations, offersByType, saveClick, closeClick, deleteClick }) {
     super();
-    this._state = EditPointView.parsePointToState(point, offersByType, destinations);
     this.#destinations = destinations;
     this.#offersByType = offersByType;
+    this._state = EditPointView.parsePointToState(point, offersByType, destinations);
 
     this.#saveClick = saveClick;
     this.#closeClick = closeClick;
+    this.#deleteClick = deleteClick;
+
     this._restoreHandlers();
   }
 
@@ -165,6 +180,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('blur', this.#destinationChangeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersCheckHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     this.#setDateFromPicker();
     this.#setDateToPicker();
   }
@@ -195,15 +211,20 @@ export default class EditPointView extends AbstractStatefulView {
 
   #dateToChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateFrom: userDate,
+      dateTo: userDate,
     });
   };
 
   #saveClickHandler = (evt) => {
     evt.preventDefault();
     if (this._state.isDesinationCorrect) {
-      this.#saveClick();
+      this.#saveClick(EditPointView.parseStateToPoint(this._state));
     }
+  };
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#deleteClick(EditPointView.parseStateToPoint(this._state));
   };
 
   #closeClickHandler = (evt) => {
@@ -213,7 +234,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     this._setState({
-      price: evt.target.value,
+      basePrice: parseInt(evt.target.value, 10),
     });
   };
 
@@ -221,14 +242,13 @@ export default class EditPointView extends AbstractStatefulView {
     const type = evt.target.value;
     this.updateElement({
       type: type,
-      offersObjects: this.#offersByType.find((offer) => offer.type === type).offers.map((offer) => ({ ...offer, isChecked: false })),
+      offersObjects: this.#offersByType
+        .find((offer) => offer.type === type)
+        .offers.map((offer) => ({ ...offer, isChecked: false })),
     });
   };
 
   #offersCheckHandler = (evt) => {
-    if (evt.target.tagName === 'DIV') {
-      return;
-    }
     let offerId = evt.target.dataset.name;
     if (!offerId) {
       offerId = evt.target.parentNode.dataset.name;
@@ -247,13 +267,23 @@ export default class EditPointView extends AbstractStatefulView {
     if (chosenDestination) {
       this.updateElement({
         destination: chosenDestination,
+        isDesinationCorrect: true,
+      });
+    } else {
+      this.updateElement({
+        isDesinationCorrect: false,
       });
     }
   };
 
   static parsePointToState = (point, offersByType, destinations) => ({
     ...point,
-    offers: offersByType.find((offer) => offer.type === point.type).offers.map((offer) => ({ ...offer, isChecked: point.offers.includes(offer.id) })),
+    offers: offersByType
+      .find((offer) => offer.type === point.type)
+      .offers.map((offer) => ({
+        ...offer,
+        isChecked: point.offers.includes(offer.id),
+      })),
     destination: destinations.find((destination) => destination.id === point.destination),
     isDesinationCorrect: true,
   });

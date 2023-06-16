@@ -1,5 +1,7 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbsractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
+import { SortFunctions } from '../utils';
+import { SortType } from '../const';
 
 const createTripTitleInfo = (points, destinations) => {
   const destinationsOrder = [];
@@ -38,13 +40,13 @@ const createInfoTemplate = (points, destinations) => {
   </section>`;
 };
 
-export default class InfoView extends AbstractView {
+export default class InfoView extends AbsractView {
   #points = null;
   #destinations = null;
 
   constructor(points, destinations) {
     super();
-    this.#points = points;
+    this.#points = points.sort(SortFunctions[SortType.DAY]);
     this.#destinations = destinations;
   }
 
