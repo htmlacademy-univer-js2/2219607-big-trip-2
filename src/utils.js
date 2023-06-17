@@ -1,10 +1,5 @@
-import {FilterType, SortType} from './const';
+import { FilterType, SortType } from './const';
 import dayjs from 'dayjs';
-
-export const randomInteger = (min, max) => {
-  const random = min + Math.random() * (max + 1 - min);
-  return Math.floor(random);
-};
 
 export function upperCaseFirst(str) {
   if (!str) {
@@ -24,17 +19,18 @@ export const humanizeDateTime = (dateFrom, dateTo) => {
     return `${parseInt(datetimeBetween / oneDayInMilliseconds, 10)}D ${parseInt(
       (datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds,
       10
-    )}H ${parseInt(datetimeBetween % oneHourInMilliseconds, 10 / oneMinuteInMilliseconds)}M`;
+    )}H ${parseInt((datetimeBetween % oneHourInMilliseconds) / oneMinuteInMilliseconds, 10)}M`;
   } else if (datetimeBetween > oneHourInMilliseconds) {
-    return `${parseInt((datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds, 10)}H ${
-      parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds
-    }M`;
+    return `${parseInt((datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds, 10)}H ${parseInt(
+      (datetimeBetween % oneHourInMilliseconds) / oneMinuteInMilliseconds,
+      10
+    )}M`;
   } else {
-    return `${parseInt(datetimeBetween % oneHourInMilliseconds, 10) / oneMinuteInMilliseconds}M`;
+    return `${parseInt((datetimeBetween % oneHourInMilliseconds) / oneMinuteInMilliseconds, 10)}M`;
   }
 };
 
-export const isDateBefore = (dateFrom, dateTo) => dateTo.diff(dateFrom) > 0;
+export const isDateBefore = (dateFrom, dateTo) => dayjs(dateTo).diff(dayjs(dateFrom)) > 0;
 
 export const SortFunctions = {
   [SortType.DAY]: (firstPoint, secondPoint) => dayjs(firstPoint.dateFrom).diff(dayjs(secondPoint.dateFrom)),
@@ -48,7 +44,7 @@ export const FilterFunctions = {
   [FilterType.EVERYTHING]: () => true,
   [FilterType.FUTURE]: (point) => {
     const today = dayjs();
-    return !isDateBefore(point.dateTo, today);
+    return !isDateBefore(point.dateFrom, today);
   },
   [FilterType.PAST]: (point) => {
     const today = dayjs();

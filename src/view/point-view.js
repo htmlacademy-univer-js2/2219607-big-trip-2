@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { humanizeDateTime, upperCaseFirst } from '../utils';
+import {humanizeDateTime, upperCaseFirst} from '../utils';
 import AbstractView from '../framework/view/abstract-view';
 
 const createOffersTemplate = (offers, type, activeOffersIds) => {
@@ -24,7 +24,7 @@ const createPointTemplate = (point, destinations, offersByType) => {
   dateFrom = dayjs(dateFrom);
   dateTo = dayjs(dateTo);
   const datetimeBetween = humanizeDateTime(dateFrom, dateTo);
-  const destinationName = destinations[destination].name;
+  const destinationName = destinations.find((dest) => dest.id === destination).name;
 
   const activeOffersTemplate = createOffersTemplate(offersByType, type, offers);
 
