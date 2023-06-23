@@ -1,5 +1,5 @@
-import {UpdateType, UserAction} from '../const';
-import {RenderPosition, remove, render} from '../framework/render';
+import { UpdateType, UserAction } from '../const';
+import { RenderPosition, remove, render } from '../framework/render';
 import EditPointView from '../view/edit-point-view';
 export default class NewPointPresenter {
   #destinations = null;
