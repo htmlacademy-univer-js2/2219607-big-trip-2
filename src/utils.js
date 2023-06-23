@@ -15,6 +15,7 @@ export const humanizeDateTime = (dateFrom, dateTo) => {
   const oneDayInMilliseconds = 24 * oneHourInMilliseconds;
 
   const datetimeBetween = dateTo.diff(dateFrom);
+
   if (datetimeBetween > oneDayInMilliseconds) {
     return `${parseInt(datetimeBetween / oneDayInMilliseconds, 10)}D ${parseInt(
       (datetimeBetween % oneDayInMilliseconds) / oneHourInMilliseconds,
@@ -25,12 +26,11 @@ export const humanizeDateTime = (dateFrom, dateTo) => {
       (datetimeBetween % oneHourInMilliseconds) / oneMinuteInMilliseconds,
       10
     )}M`;
-  } else {
-    return `${parseInt((datetimeBetween % oneHourInMilliseconds) / oneMinuteInMilliseconds, 10)}M`;
   }
+  return `${parseInt((datetimeBetween % oneHourInMilliseconds) / oneMinuteInMilliseconds, 10)}M`;
 };
 
-export const isDateBefore = (dateFrom, dateTo) => dayjs(dateTo).diff(dayjs(dateFrom)) > 0;
+export const isFirstDateBeforeSecond = (dateFrom, dateTo) => dayjs(dateTo).diff(dayjs(dateFrom)) > 0;
 
 export const SortFunctions = {
   [SortType.DAY]: (firstPoint, secondPoint) => dayjs(firstPoint.dateFrom).diff(dayjs(secondPoint.dateFrom)),
@@ -44,10 +44,10 @@ export const FilterFunctions = {
   [FilterType.EVERYTHING]: () => true,
   [FilterType.FUTURE]: (point) => {
     const today = dayjs();
-    return !isDateBefore(point.dateFrom, today);
+    return !isFirstDateBeforeSecond(point.dateFrom, today);
   },
   [FilterType.PAST]: (point) => {
     const today = dayjs();
-    return isDateBefore(point.dateTo, today);
+    return isFirstDateBeforeSecond(point.dateTo, today);
   },
 };

@@ -1,11 +1,13 @@
 import Observable from '../framework/observable';
-import {UpdateType} from '../const';
+import { UpdateType } from '../const';
 
 export default class PointsModel extends Observable {
   #pointsApiService = null;
   #points = [];
   #destinations = [];
   #offers = [];
+
+  errored = false;
 
   constructor({ pointsApiService }) {
     super();
@@ -34,6 +36,7 @@ export default class PointsModel extends Observable {
       this.#points = [];
       this.#offers = [];
       this.#destinations = [];
+      this.errored = true;
     }
     this._notify(UpdateType.INIT);
   }
@@ -72,14 +75,14 @@ export default class PointsModel extends Observable {
     if (index === -1) {
       return;
     }
-    await this.#pointsApiService.deletePoint(update);
-    this.#points = [...this.#points.slice(0, index), ...this.#points.slice(index + 1)];
-    this._notify(updateType, update);
-    // try {
 
-    // } catch {
-    //   throw new Error("Can't delete task");
-    // }
+    try {
+      await this.#pointsApiService.deletePoint(update);
+      this.#points = [...this.#points.slice(0, index), ...this.#points.slice(index + 1)];
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Can\'t delete task');
+    }
   }
 
   #adaptToClient = (point) => {

@@ -1,7 +1,7 @@
-import {render, replace, remove} from '../framework/render';
+import { render, replace, remove } from '../framework/render';
 import EditPointView from '../view/edit-point-view';
 import PointView from '../view/point-view';
-import {UserAction, UpdateType} from '../const';
+import { UserAction, UpdateType } from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
